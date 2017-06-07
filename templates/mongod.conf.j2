@@ -1,3 +1,5 @@
+# {{ ansible_managed }}
+
 # mongod.conf
 
 # for documentation of all options, see:
@@ -7,11 +9,11 @@
 systemLog:
   destination: file
   logAppend: true
-  path: "{{ mongo_log_path }}"
+  path: {{ mongo_log_path }}
 
 # Where and how to store data.
 storage:
-  dbPath: "{{ mongo_data_path }}"
+  dbPath: {{ mongo_data_path }}
   journal:
     enabled: true
 #  engine:
@@ -36,7 +38,7 @@ security:
 
 #replication:
 replication:
-   replSetName: "{{ mongo_replset_name }}"
+   replSetName: {{ mongo_replset_name }}
 
 #sharding:
 
