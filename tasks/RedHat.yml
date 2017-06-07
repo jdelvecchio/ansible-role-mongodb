@@ -34,37 +34,7 @@
     - "{{ mongo_data_path }}"
     - "{{ mongo_log_path }}"
     
-- name: 'adding dbpath'
-  lineinfile: 
-    dest: /etc/mongod.conf
-    state: present
-    regexp: '^  dbPath:'
-    line: '  dbPath: {{ mongo_data_path }}'
 
-- name: 'adding log_path'
-  lineinfile:
-    dest: /etc/mongod.conf
-    state: present 
-    regexp: '^  path:' 
-    line: '  path: {{ mongo_log_path }}/mongodb.log'
-
-- name: 'Configuring the replset'
-  blockinfile:
-    dest: /etc/mongod.conf
-    state: present
-    block: |
-      replication:
-         replSetName: "{{ mongo_replset_name }}"
-
-- name: 'Configuring binding'
-  lineinfile:
-    dest: /etc/mongod.conf
-    state: present
-    regexp: '^  bindIp'
-    line: '  bindIp: 0.0.0.0'
-  notify:
-    - restart mongod
-  
 - name: starting service mongod
   service:
     name: mongod
