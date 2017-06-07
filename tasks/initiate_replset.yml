@@ -1,0 +1,23 @@
+---
+- name: set mongo initiate var
+  set_fact:
+    mongo_initiate: |
+      rs.initiate(
+         {
+            _id: \""{{ mongo_replset_name }}"\",
+            version: 1,
+            members: [
+               { _id: 0, host : \""{{ mongo_cluster_primary }}:27017"\" }
+            ]
+         }
+      )
+
+- name: initiate primary
+  command: mongo localhost:27017/admin --eval "{{ mongo_initiate }}"
+  when: ansible_host == mongo_cluster_primary
+
+- name: add other members to cluster
+  command: mongo localhost:27017/admin --eval "rs.add(\"{{ item }}:27017\")"
+  when: ansible_host == mongo_cluster_primary
+  with_items:
+    - "{{ mongo_cluster_members | difference(mongo_cluster_primary) }}" 

@@ -1,0 +1,34 @@
+---
+- name: get tuned active profile
+  command: cat /etc/tuned/active_profile
+  register: tuned_active_profile
+
+- name: create new tuned directory (disable thp)
+  file:
+    path: /etc/tuned/no-thp
+    state: directory
+    owner: root
+    group: root
+  notify: restart mongod
+
+- name: create new tuned profile (disable thp)
+  template:
+    src: tuned.conf.j2
+    dest: /etc/tuned/no-thp/tuned.conf
+
+- name: add require=tuned.service in mongod systemd service
+  lineinfile:
+    dest: /usr/lib/systemd/system/mongod.service
+    state: present
+    regexp: '^After=network.target'
+    line: 'After=network.target tuned.service'
+
+- name:  create script to disable thp defrag
+  template:
+    src: disable_thp_defrag.sh
+    dest: /etc/tuned/no-thp/disable_thp_defrag.sh
+    mode: 0744
+
+- name: activate no-thp tuned profile
+  command: tuned-adm profile no-thp
+  when: tuned_active_profile.stdout != "no-thp"

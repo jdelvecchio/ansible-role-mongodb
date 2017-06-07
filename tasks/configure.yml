@@ -1,0 +1,32 @@
+---
+- name: Configure log rotation
+  template:
+    src: logrotate.conf.j2
+    dest: /etc/logrotate.d/mongodb.conf
+  when: mongo_logrotate
+
+###based on https://docs.mongodb.com/v3.4/tutorial/deploy-replica-set-with-keyfile-access-control/
+- name: registering keyfile
+  command: openssl rand -base64 756
+  delegate_to: 127.0.0.1
+
+## il faut trouver un moyen de creer une keyfile et le balancer sur les 3 serveurs
+
+### faire un template pour tous ces linesinfile
+- name: create mongod admin user
+  mongodb_user:
+    database: admin
+    name: "{{ mongo_admin_user }}"
+    replica_set: "{{ mongo_replset_name }}"
+    password: "{{ mongo_admin_password }}"
+    roles: readWriteAnyDatabase,clusterAdmin,dbAdminAnyDatabase
+    state: present
+
+- name: enable mongod authentification
+  lineinfile:
+    dest: /etc/mongod.conf
+    state: present
+    regexp: '^security.authorization:'
+    line: 'security.authorization: enabled'
+  notify: restart mongod
+

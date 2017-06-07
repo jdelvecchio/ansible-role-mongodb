@@ -1,0 +1,20 @@
+---
+mongo_log_path: /data/mongodb/log
+mongo_data_path: /data/mongodb/data
+mongo_replset_name: graylog
+mongo_cluster_init: false
+mongo_cluster_members: ['hostname1', 'hostname2', 'hostname3']
+mongo_cluster_primary: "hostname1"
+mongo_transparent_hugepage_disable: true 
+
+mongo_admin_password: 'passwd'
+mongo_admin_user: 'admin'
+
+mongo_logrotate: yes 
+mongo_logrotate_options:
+  - compress
+  - copytruncate
+  - daily
+  - dateext
+  - rotate 7
+  - size 10M
