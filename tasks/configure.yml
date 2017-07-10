@@ -7,6 +7,20 @@
 
 ###based on https://docs.mongodb.com/v3.4/tutorial/deploy-replica-set-with-keyfile-access-control/
 
+- name: Create keyFile
+  copy:
+    dest: "{{ mongod_security_keyfile }}"
+    content: "{{ mongod_keyfile_content }}"
+    owner: "{{ mongod }}"
+    group: "root"
+    mode: 0400
+
+- name: Configure mongodb
+  template:
+    src: mongod.conf.j2
+    dest: /etc/mongod.conf
+  notify: restart mongod
+
 - name: create mongod admin user
   mongodb_user:
     database: admin
@@ -15,9 +29,4 @@
     password: "{{ mongo_admin_password }}"
     roles: readWriteAnyDatabase,clusterAdmin,dbAdminAnyDatabase
     state: present
-
-- name: Configure mongodb
-  template:
-    src: mongod.conf.j2
-    dest: /etc/mongod.conf
-  notify: restart mongod
+  ignore_errors: true
