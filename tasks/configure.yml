@@ -11,7 +11,7 @@
   template:
     src: mongod.conf.j2
     dest: /etc/mongod.conf
-notify: restart mongod
+  notify: restart mongod
 
 - name: create mongod admin user
   mongodb_user:
