@@ -1,4 +1,5 @@
 ---
+mongo_path: /data/mongodb
 mongo_log_path: /data/mongodb/log
 mongo_data_path: /data/mongodb/data
 mongo_replset_name: graylog

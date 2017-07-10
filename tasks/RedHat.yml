@@ -34,7 +34,6 @@
     - "{{ mongo_data_path }}"
     - "{{ mongo_log_path }}"
     
-
 - name: starting service mongod
   service:
     name: mongod

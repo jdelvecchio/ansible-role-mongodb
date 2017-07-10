@@ -7,6 +7,11 @@
 
 ###based on https://docs.mongodb.com/v3.4/tutorial/deploy-replica-set-with-keyfile-access-control/
 
+- name: Configure mongodb
+  template:
+    src: mongod.conf.j2
+    dest: /etc/mongod.conf
+
 - name: create mongod admin user
   mongodb_user:
     database: admin
@@ -16,11 +21,4 @@
     roles: readWriteAnyDatabase,clusterAdmin,dbAdminAnyDatabase
     state: present
 
-- name: enable mongod authentification
-  lineinfile:
-    dest: /etc/mongod.conf
-    state: present
-    regexp: '^security.authorization:'
-    line: 'security.authorization: enabled'
-  notify: restart mongod
 
