@@ -1,11 +1,13 @@
 # ansible-role-mongodb
 
 
-Ansible role which installs and configure a mongodb replicaSet. [MongoDB](http://http://www.mongodb.com/)
+Ansible role which installs and configure a mongodb replicaSet. [MongoDB](https://www.mongodb.com/)
 
-* Install and configure mongodb replicaSet
+* Install and configure a mongodb simple replicaset, with 1 primary and x secondaries
+* All secondaries replicate the data and are eligible to become primary nodes
 * Uses a keyfile for internal authentification inside the cluster
-![Image of mongodb replicaset] (https://docs.mongodb.com/manual/_images/replica-set-primary-with-two-secondaries.bakedsvg.svg)
+* Schema of the replicaSet created :
+![Image of mongodb replicaset](https://docs.mongodb.com/manual/_images/replica-set-primary-with-two-secondaries.bakedsvg.svg "MongoDB ReplicaSet")
 
 
 #### Variables
@@ -45,14 +47,14 @@ mongo_keyfile_content: |
   tW6lHcLf1xt4uWH2FMPJgr/EWZ4dfhWdg7Ysnm4cWi+GLOqVDJpP0jgQGPfcp1nx
   4dvnfQVmUgpQOJTJ2ybWMQTXKW0JxStwSvY2J237ubxfDiGM
 
-#Tuning
+# Tuning
 mongo_transparent_hugepage_disable: true			# Disables transparent_hugepages and transparent_hugepages_defrag
 
-#Admin User
+# Admin User
 mongo_admin_user: 'admin'					# Admin username
 mongo_admin_password: 'passwd'					# Admin password
 
-#Logrotate
+# Logrotate
 mongo_logrotate: yes
 mongo_logrotate_options:
   - compress
