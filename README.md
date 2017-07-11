@@ -58,8 +58,6 @@ $ git clone https://github.com/jdelvecchio/ansible-role-mongodb
 ```
 Then set vars in your playbook file.
 
-git clone to your roles and set vars in your playbook file.
-
 Example with minimum required variables :
 
 ```yaml
