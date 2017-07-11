@@ -3,10 +3,10 @@ mongo_path: /data/mongodb
 mongo_log_path: "{{ mongo_path }}/log"
 mongo_data_path: "{{ mongo_path }}/data"
 mongo_keyfile_path: "{{ mongo_path }}/keyfile"
-mongo_replset_name: graylog
-mongo_cluster_init: false
-mongo_cluster_members: ['hostname1', 'hostname2', 'hostname3']
-mongo_cluster_primary: "hostname1"
+mongo_replset_name: jim
+mongo_replset_init: false
+mongo_replset_members: ['hostname1', 'hostname2', 'hostname3']
+mongo_replset_primary: "hostname1"
 mongo_transparent_hugepage_disable: true 
 
 mongo_admin_password: 'passwd'

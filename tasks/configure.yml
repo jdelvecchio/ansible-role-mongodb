@@ -19,18 +19,18 @@
   template:
     src: mongod.conf_noauth.j2
     dest: /etc/mongod.conf
-  when: mongo_cluster_init
+  when: mongo_replset_init
 
 - name: restart mongod
   service:
     name: mongod
     state: restarted
-  when: mongo_cluster_init
+  when: mongo_replset_init
 
 - name: wait for mongod port
   wait_for:
     port: 27017
-  when: mongo_cluster_init
+  when: mongo_replset_init
   
 - name: set mongo initiate var
   set_fact:
@@ -40,15 +40,15 @@
             _id: \""{{ mongo_replset_name }}"\",
             version: 1,
             members: [
-               { _id: 0, host : \""{{ mongo_cluster_primary }}:27017"\" }
+               { _id: 0, host : \""{{ mongo_replset_primary }}:27017"\" }
             ]
          }
       )
-  when: ansible_host == mongo_cluster_primary and mongo_cluster_init
+  when: ansible_host == mongo_replset_primary and mongo_replset_init
 
 - name: initiate primary
   command: mongo localhost:27017/admin --eval "{{ mongo_initiate }}"
-  when: ansible_host == mongo_cluster_primary and mongo_cluster_init
+  when: ansible_host == mongo_replset_primary and mongo_replset_init
 
 - name: create mongod admin user
   mongodb_user:
@@ -73,10 +73,10 @@
 - name: wait for mongod port
   wait_for:
     port: 27017
-  when: mongo_cluster_init
+  when: mongo_replset_init
 
 - name: add other members to cluster
   command: mongo localhost:27017/admin -u "{{ mongo_admin_user }}" -p "{{ mongo_admin_password }}" --eval "rs.add(\"{{ item }}:27017\")"
-  when: ansible_host == mongo_cluster_primary and mongo_cluster_init
+  when: ansible_host == mongo_replset_primary and mongo_replset_init
   with_items:
-    - "{{ mongo_cluster_members | difference(mongo_cluster_primary) }}"
+    - "{{ mongo_replset_members | difference(mongo_replset_primary) }}"

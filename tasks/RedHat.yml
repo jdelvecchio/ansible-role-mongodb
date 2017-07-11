@@ -54,4 +54,4 @@
     insertafter: EOF
     line: "{{ hostvars[item]['ansible_all_ipv4_addresses']|first }} {{ hostvars[item]['ansible_hostname'] }}"
   with_items: 
-    - "{{ mongo_cluster_members }}"
+    - "{{ mongo_replset_members }}"

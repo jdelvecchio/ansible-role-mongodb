@@ -5,7 +5,7 @@
     - install
 
 #- include: initiate_replset.yml
-#  when: mongo_cluster_init
+#  when: mongo_replset_init
 #  tags:
 #    - replicaset
 

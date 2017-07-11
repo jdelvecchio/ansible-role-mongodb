@@ -7,17 +7,17 @@
             _id: \""{{ mongo_replset_name }}"\",
             version: 1,
             members: [
-               { _id: 0, host : \""{{ mongo_cluster_primary }}:27017"\" }
+               { _id: 0, host : \""{{ mongo_replset_primary }}:27017"\" }
             ]
          }
       )
 
 - name: initiate primary
   command: mongo localhost:27017/admin --eval "{{ mongo_initiate }}"
-  when: ansible_host == mongo_cluster_primary
+  when: ansible_host == mongo_replset_primary
 
 - name: add other members to cluster
   command: mongo localhost:27017/admin --eval "rs.add(\"{{ item }}:27017\")"
-  when: ansible_host == mongo_cluster_primary
+  when: ansible_host == mongo_replset_primary
   with_items:
-    - "{{ mongo_cluster_members | difference(mongo_cluster_primary) }}" 
+    - "{{ mongo_replset_members | difference(mongo_replset_primary) }}" 
