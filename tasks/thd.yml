@@ -23,6 +23,9 @@
     regexp: '^After=network.target'
     line: 'After=network.target tuned.service'
 
+- name: 'updating MongoDB service'
+  systemd: name=mongod daemon_reload=yes enabled=yes
+
 - name:  create script to disable thp defrag
   template:
     src: disable_thp_defrag.sh

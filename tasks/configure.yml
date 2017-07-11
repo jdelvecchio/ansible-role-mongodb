@@ -9,17 +9,38 @@
 
 - name: Create keyFile
   copy:
-    dest: "{{ mongod_security_keyfile }}"
-    content: "{{ mongod_keyfile_content }}"
-    owner: "{{ mongod }}"
+    dest: "{{ mongo_security_keyfile }}"
+    content: "{{ mongo_keyfile_content }}"
+    owner: "mongod"
     group: "root"
     mode: 0400
 
 - name: Configure mongodb
   template:
-    src: mongod.conf.j2
+    src: mongod.conf_noauth.j2
     dest: /etc/mongod.conf
   notify: restart mongod
+
+- name: flush handlers
+  meta: flush_handlers
+
+- name: set mongo initiate var
+  set_fact:
+    mongo_initiate: |
+      rs.initiate(
+         {
+            _id: \""{{ mongo_replset_name }}"\",
+            version: 1,
+            members: [
+               { _id: 0, host : \""{{ mongo_cluster_primary }}:27017"\" }
+            ]
+         }
+      )
+  when: mongo_cluster_init
+
+- name: initiate primary
+  command: mongo localhost:27017/admin --eval "{{ mongo_initiate }}"
+  when: ansible_host == mongo_cluster_primary and mongo_cluster_init
 
 - name: create mongod admin user
   mongodb_user:
@@ -27,6 +48,23 @@
     name: "{{ mongo_admin_user }}"
     replica_set: "{{ mongo_replset_name }}"
     password: "{{ mongo_admin_password }}"
-    roles: readWriteAnyDatabase,clusterAdmin,dbAdminAnyDatabase
+#    roles: readWriteAnyDatabase,clusterAdmin,dbAdminAnyDatabase
+    roles: root
     state: present
   ignore_errors: true
+
+- name: Configure mongodb
+  template:
+    src: mongod.conf.j2
+    dest: /etc/mongod.conf
+  notify: restart mongod
+
+- name: flush handlers
+  meta: flush_handlers
+
+
+- name: add other members to cluster
+  command: mongo localhost:27017/admin -u "{{ mongo_admin_user }}" -p "{{ mongo_admin_password }}" --eval "rs.add(\"{{ item }}:27017\")"
+  when: ansible_host == mongo_cluster_primary and mongo_cluster_init
+  with_items:
+    - "{{ mongo_cluster_members | difference(mongo_cluster_primary) }}"

@@ -4,10 +4,10 @@
   tags:
     - install
 
-- include: initiate_replset.yml
-  when: mongo_cluster_init
-  tags:
-    - replicaset
+#- include: initiate_replset.yml
+#  when: mongo_cluster_init
+#  tags:
+#    - replicaset
 
 - include: configure.yml
   tags:
