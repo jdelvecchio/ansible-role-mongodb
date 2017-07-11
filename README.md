@@ -10,7 +10,7 @@ Ansible role which installs and configure a mongodb replicaSet. [MongoDB](https:
 ![Image of mongodb replicaset](https://docs.mongodb.com/manual/_images/replica-set-primary-with-two-secondaries.bakedsvg.svg "MongoDB ReplicaSet")
 
 
-#### Variables
+### Variables
 
 Here is the list of all variables and their default values:
 
@@ -29,23 +29,7 @@ mongo_replset_members: ['hostname1', 'hostname2', 'hostname3']	# Hostnames of yo
 mongo_replset_primary: "hostname1"				# Hostname of the primary, which server will be the primary
 
 # Content of the keyfile, must generate it with openssl rand -base64 756
-mongo_keyfile_content: |
-  eNkRZn2fL/1ICC0EMlPpbAKmMDLSQCfSS0lSSVCcr1E6v10Ulz/mQ5Zi5DiwhWgp
-  1Exj6WW5p6UuXO2Yn2CN6aibM8OBdmYfHj/YeerfraU46ORQAaA0qePEY14zSeBu
-  fk73OF9Rmu9BYQ7lBklASf07530HGrOdVej6j7PzOJuU7G9johHw23A39gstRrde
-  Puevtn+QBnY8jZ6S3343JAvITtoqpCDH8J6gGf4Ab70ahODNQMExvdPjBxuN8kGx
-  sLnLzsi+uLu4DUpVX8wRf1lPdS60FKxjH/SCFwOvHdYkay2gtgP8YvEOla6RonOc
-  g5fCxNEKtbl0rWbwVgO4K4BCqfVgh9r26/3YIAaArXa23ieIlopv24uvE8/xoN9s
-  z61rPvJYGYSNsG/o+kSitO0N9lffqfvoy1v+HST01GdvnLKkns83rk6Mn0++/Gq4
-  7E1rYBssEE9oUbK90c7NCtZWDN54noCkQhqlFT5Uuh0y0X+bvtx+BjcfMtzJEHXg
-  W+CoTfCEqc7+7Vr4GvPTYFXhtYw6kfEKy4+VSaahUTZ8//Dl2v/0ff/chTjhqn18
-  6PhnP7TG6Q+a8yZADLGJ5cmAR5DT+A+oJAz9FLfJnzXxM6YdxaJp6VStRIek7b7j
-  D0OfnzDHpulgSs8twhWEnVsV9PhES7anNSmAbK8IitEqgnvJJ4IOp+hYqpqujrlj
-  OK/+o/br4rc4yG7sV/5kKnCRUQ9GDyTi+JWsgF0EotK2bn6oAbGTEQpyzIooUPDH
-  5dVMDmM27o2eqY7IcriDd2KTlZ+Enau0gpCiQg5DB59hSXMzZb1OqnfQlkl89iop
-  ZMYiOp1ivfX6rUBasqiiuIVv/wMOdNnoS2ojKVuCfTHSSUKC3iHbm9hwPetvDtLX
-  tW6lHcLf1xt4uWH2FMPJgr/EWZ4dfhWdg7Ysnm4cWi+GLOqVDJpP0jgQGPfcp1nx
-  4dvnfQVmUgpQOJTJ2ybWMQTXKW0JxStwSvY2J237ubxfDiGM
+mongo_keyfile_content: ''
 
 # Tuning
 mongo_transparent_hugepage_disable: true			# Disables transparent_hugepages and transparent_hugepages_defrag
@@ -63,3 +47,46 @@ mongo_logrotate_options:
   - dateext
   - rotate 7
   - size 10M
+```
+
+### Usage
+
+
+Clone the repo.
+```bash
+$ git clone https://github.com/jdelvecchio/ansible-role-mongodb
+```
+Then set vars in your playbook file.
+
+git clone to your roles and set vars in your playbook file.
+
+Example with minimum required variables :
+
+```yaml
+
+- hosts: all
+  gather_facts: yes
+  become: yes
+  roles:
+    - role: ansible-role-mongodb
+      mongo_replset_init: true
+      mongo_replset_members: ['hostname1', 'hostname2', 'hostname3']
+      mongo_replset_primary: "hostname1"
+      mongo_keyfile_content: |
+        sbOJJ2eEY4mUg24KUkkQgdYy+EOzNXKRCqiFhhK2a8Zv5h9SqfR7vySGSaBLMMZW
+        Sk3K5ZHh++PVKyTJrnuvVsNT/oRku7ji+YeSKNqAKtWgm+ktci3/PzNk3gP9SzZC
+        5KjQF/ClnwWpeZ76NIIB8te9izBDdQ/eOorYFNfmtS2PSuR2LcRvK77jUn5qkNFW
+        9aqxUTjvCJxfOwVXpE9fHkhgbF0qlOhI+hDmMfKR60fqIWV98WSFdIRoFh4D2fSw
+        VWTZVIxbHA/OrK5Rb5O+HHjhtDRhl9VqjJsViQ1QLusN/UBPFCMP+SiSipumwC4s
+        mbIkPKQxmZQxsW9LTUmaVRdEw3pN/V94MyZD/kadMxsf0rqAYYrMjqFk/SGDn2oO
+        16+xuYuXbbFJ5C1+SDpz/tgHgpu+p7U94C+lLv+fsX7ZgaEcstkGDYKAhqHy58en
+        cxr6iTh0HkXe6sH2/JxmLZT+Kj003eUr5X0/KeL3DM+nVU1QVpem0gmddc8i2Mz9
+        uwCYoqUCLmcrYK3JVrwi0oeWhtTGyABTGAYNjQmKT9FYw0IVMnfw2onN9Ia6wVtH
+        Ve3KKKhxeOgOcN98yhXbg8yOLWShs9rR3G4bgj2sciJn5obZ9+HNui9pxsoJit8x
+        2+k0ZyizNBIFQeNvuUoX215VWy2t0j4lVvFW8AhKlakhAFejrpC4xr3NZ/y0pXfU
+        TAp1OKdoVveDf+GeugfwLECP/AvfKmgrxDoKE2YFyhnZZzASTpOSECyHOu+YiBDv
+        esh4QQ6v7KufVhTfzUlCSLKNB56onq1SQo4nRor2/RA33yj9FuNVnrDCds+c50vD
+        Ahj8v/JSKyFKAslJicFCMme/3bLycvzMzVZvHM2wWtDOmusUUvMEy2e2E2dYK1i2
+        R6aTEx/EhVFa0ToVpTrwk4zNYJFgYjNZviSbeMiTSCQwmrAPNu5eicpPC6rQUp/y
+        3L2lbVcR1fTqlG6SoV/EBwRkN/9RLBvb9XcXIXzNBOxqMFND
+      
