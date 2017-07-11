@@ -9,7 +9,7 @@
 
 - name: Create keyFile
   copy:
-    dest: "{{ mongo_security_keyfile }}"
+    dest: "{{ mongo_keyfile_path }}"
     content: "{{ mongo_keyfile_content }}"
     owner: "mongod"
     group: "root"
@@ -19,11 +19,19 @@
   template:
     src: mongod.conf_noauth.j2
     dest: /etc/mongod.conf
-  notify: restart mongod
+  when: mongo_cluster_init
 
-- name: flush handlers
-  meta: flush_handlers
+- name: restart mongod
+  service:
+    name: mongod
+    state: restarted
+  when: mongo_cluster_init
 
+- name: wait for mongod port
+  wait_for:
+    port: 27017
+  when: mongo_cluster_init
+  
 - name: set mongo initiate var
   set_fact:
     mongo_initiate: |
@@ -36,7 +44,7 @@
             ]
          }
       )
-  when: mongo_cluster_init
+  when: ansible_host == mongo_cluster_primary and mongo_cluster_init
 
 - name: initiate primary
   command: mongo localhost:27017/admin --eval "{{ mongo_initiate }}"
@@ -48,7 +56,6 @@
     name: "{{ mongo_admin_user }}"
     replica_set: "{{ mongo_replset_name }}"
     password: "{{ mongo_admin_password }}"
-#    roles: readWriteAnyDatabase,clusterAdmin,dbAdminAnyDatabase
     roles: root
     state: present
   ignore_errors: true
@@ -57,11 +64,16 @@
   template:
     src: mongod.conf.j2
     dest: /etc/mongod.conf
-  notify: restart mongod
 
-- name: flush handlers
-  meta: flush_handlers
+- name: restart mongod
+  service:
+    name: mongod
+    state: restarted
 
+- name: wait for mongod port
+  wait_for:
+    port: 27017
+  when: mongo_cluster_init
 
 - name: add other members to cluster
   command: mongo localhost:27017/admin -u "{{ mongo_admin_user }}" -p "{{ mongo_admin_password }}" --eval "rs.add(\"{{ item }}:27017\")"

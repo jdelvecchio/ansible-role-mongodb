@@ -1,8 +1,8 @@
 ---
 mongo_path: /data/mongodb
-mongo_log_path: /data/mongodb/log
-mongo_data_path: /data/mongodb/data
-mongo_security_keyfile: "{{ mongo_path }}/keyfile"
+mongo_log_path: "{{ mongo_path }}/log"
+mongo_data_path: "{{ mongo_path }}/data"
+mongo_keyfile_path: "{{ mongo_path }}/keyfile"
 mongo_replset_name: graylog
 mongo_cluster_init: false
 mongo_cluster_members: ['hostname1', 'hostname2', 'hostname3']
