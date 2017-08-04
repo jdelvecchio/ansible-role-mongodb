@@ -59,6 +59,7 @@
     roles: root
     state: present
   ignore_errors: true
+  when: mongo_replset_init
 
 - name: Configure mongodb
   template:
@@ -69,6 +70,7 @@
   service:
     name: mongod
     state: restarted
+  when: mongo_replset_init
 
 - name: wait for mongod port
   wait_for:

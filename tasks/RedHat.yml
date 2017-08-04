@@ -39,13 +39,13 @@
     name: mongod
     state: started
 
-- name: update /etc/hosts with hostname
-  lineinfile:
-    dest: /etc/hosts
-    state: present
-    insertbefore: BOF
-    regexp: '^127.0.0.1'
-    line: "127.0.0.1 localhost {{ ansible_hostname }}"
+#- name: update /etc/hosts with hostname
+#  lineinfile:
+#    dest: /etc/hosts
+#    state: present
+#    insertbefore: BOF
+#    regexp: '^127.0.0.1'
+#    line: "127.0.0.1 localhost {{ ansible_hostname }}"
 
 - name: update /etc/hosts with cluster hostnames
   lineinfile:
