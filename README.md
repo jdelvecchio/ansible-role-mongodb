@@ -61,7 +61,7 @@ Example with minimum required variables :
 
 ```yaml
 
-- hosts: all
+- hosts: mongodb_servers
   gather_facts: yes
   become: yes
   roles:
