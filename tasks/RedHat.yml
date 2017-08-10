@@ -38,6 +38,7 @@
   service:
     name: mongod
     state: started
+    enabled: yes
 
 #- name: update /etc/hosts with hostname
 #  lineinfile:
